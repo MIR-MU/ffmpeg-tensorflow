@@ -14,10 +14,12 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 
 ## Install FFMpeg with Libtensorflow
 
-First, download the Libtensorflow library. Your version of Libtensorflow (here
-`1.15.0`) should match your version of CUDA, see [the compatibility
-table][tensorflow-compatibility]. Your version of CUDA should match your NVIDIA
-driver, see [NVIDIA CUDA Toolkit Release Notes, Table 2][nvidia-driver].
+First, download the pre-built Libtensorflow library from
+<https://storage.googleapis.com/tensorflow/libtensorflow/>. Your version of
+Libtensorflow (here `1.15.0`) should match your version of CUDA, see [the
+compatibility table][tensorflow-compatibility]. Your version of CUDA should
+match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
+2][nvidia-driver].
 
 ``` sh
 $ mkdir -p tensorflow/lib_package/
@@ -26,8 +28,8 @@ $ wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu
 $ popd
 ```
 
-If your version of Libtensorflow is not pre-built, you will need to build it
-yourself (takes about 2 hours on a quad-core laptop):
+If your version of Libtensorflow has not been pre-built, you will need to build
+it yourself, which takes about 2 hours on a quad-core laptop:
 
 ``` sh
 $ git clone https://github.com/tensorflow/tensorflow.git
@@ -44,18 +46,19 @@ of CUDA (here 10.0).
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
-$ docker build -t ffmpeg --build-arg FROM_IMAGE=cuda:10.0-cudnn7-devel-ubuntu18.04 ffmpeg-tensorflow/
+$ docker build --build-arg FROM_IMAGE=cuda:10.0-cudnn7-devel-ubuntu18.04 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-You should now see `ffmpeg` among your Docker images. Remove auxiliary
-directories and intermediary Docker images downloaded during the installation:
+You should now see `ffmpeg-tensorflow` among your Docker images.
+Remove auxiliary files and intermediary Docker images downloaded during
+the installation:
 
 ``` sh
+$ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker images
 REPOSITORY          TAG                            IMAGE ID            CREATED             SIZE
-ffmpeg              latest                         5d66a25f140b        About an hour ago   5.34GB
+ffmpeg-tensorflow   latest                         5d66a25f140b        About an hour ago   5.34GB
 tf-tensorflow-gpu   latest                         7f8c5a76892c        4 hours ago         6.15GB
-$ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker rmi 7f8c5a76892c
 ```
 
@@ -113,7 +116,7 @@ image to upscale it using one of the super-resolution models (here ESPCN):
 
 ``` sh
 $ wget https://media.xiph.org/video/derf/y4m/flower_cif.y4m
-$ alias ffmpeg-tensorflow='docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it ffmpeg'
+$ alias ffmpeg-tensorflow='docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it ffmpeg-tensorflow'
 $ ffmpeg-tensorflow -i flower_cif.y4m -filter_complex '
 >   [0:v] format=pix_fmts=yuv420p, extractplanes=y+u+v [y][u][v];
 >   [y] sr=dnn_backend=tensorflow:scale_factor=2:model=espcn.pb [y_scaled];
