@@ -29,7 +29,9 @@ $ popd
 ```
 
 If your version of Libtensorflow has not been pre-built, you will need to build
-it yourself, which takes about 2 hours on a quad-core laptop:
+it yourself, which takes about 2 hours on a quad-core laptop. Specific steps
+that need to be taken for some historic versions of Libtensorflow
+([1.12.3][libtensorflow-1.12.3]) are described in [the issues][issues].
 
 ``` sh
 $ git clone https://github.com/tensorflow/tensorflow.git
@@ -140,6 +142,7 @@ super-resolution model (right):
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
+ [issues]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues?q=is%3Aissue
  [libtensorflow-1.12.3]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues/1
  [miniconda]: https://docs.conda.io/en/latest/miniconda.html
  [model-architectures]: https://github.com/HighVoltageRocknRoll/sr#image-and-video-super-resolution
