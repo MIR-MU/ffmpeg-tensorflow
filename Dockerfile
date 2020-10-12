@@ -1,4 +1,4 @@
-ARG FROM_IMAGE=cuda:10.0-cudnn7-devel-ubuntu18.04
+ARG FROM_IMAGE=nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 FROM $FROM_IMAGE
 

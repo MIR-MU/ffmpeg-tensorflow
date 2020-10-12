@@ -46,7 +46,7 @@ of CUDA (here 10.0).
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
-$ docker build --build-arg FROM_IMAGE=cuda:10.0-cudnn7-devel-ubuntu18.04 -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --build-arg FROM_IMAGE=nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 You should now see `ffmpeg-tensorflow` among your Docker images.
