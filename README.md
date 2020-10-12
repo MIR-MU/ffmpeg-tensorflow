@@ -14,47 +14,59 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 
 ## Install FFMpeg with Libtensorflow
 
-Install the `ffmpeg-tensorflow` Docker image:
+First, download the Libtensorflow library. Your version of Libtensorflow (here
+`1.15.0`) should match your version of CUDA, see [the compatibility
+table][tensorflow-compatibility]. Your version of CUDA should match your NVIDIA
+driver, see [NVIDIA CUDA Toolkit Release Notes, Table 2][nvidia-driver].
 
 ``` sh
-$ docker build https://github.com/MIR-MU/ffmpeg-tensorflow.git -t ffmpeg-tensorflow
+$ mkdir -p tensorflow/lib_package/
+$ pushd tensorflow/lib_package/
+$ wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz
+$ popd
 ```
 
-Using [the `--build-arg` parameter of `docker build`][docker-build-arg], you can
-also specify several additional installation options:
+If your version of Libtensorflow is not pre-built, you will need to build it
+yourself (takes about 2 hours on a quad-core laptop).
 
-- **`FROM_IMAGE` (default: [`nvidia/cuda:10.0-base-ubuntu18.04`][nvidia-cuda])**:
-  The base image on top of which FFMpeg is built.
-  The version of CUDA (default: 10.0) should match your NVIDIA driver, see
-  [NVIDIA CUDA Toolkit Release Notes, Table 2][nvidia-drivers].
+``` sh
+$ git clone https://github.com/tensorflow/tensorflow.git
+$ pushd tensorflow/tensorflow/tools/ci_build/linux/
+$ git checkout v1.15.0
+$ ./libtensorflow_gpu.sh
+$ popd
+```
 
-- **`LIBTENSORFLOW` (default: `libtensorflow-gpu-linux-x86_64-1.15.0`)**:
-  The version of the Libtensorflow library that will be downloaded from
-  <https://storage.googleapis.com/tensorflow/> and used to compile FFmpeg.
-  The version of Libtensorflow (default: 1.15.0) should match your version of
-  CUDA, see [the compatibility table][tensorflow-compatibility].
+Next, build our FFMpeg Docker image (takes about 5 minutes on a quad-core
+laptop). [Your `nvidia/cuda` base image][nvidia-cuda] should match your version
+of CUDA (here 10.0).
 
-- **`FFMPEG` (default: `ffmpeg-snapshot`)**:
-  The version of FFMpeg (default: latest) that will be downloaded from
-  <https://ffmpeg.org/releases/> and compiled. A version newer than 4.1 is
-  required for Libtensorflow and super-resolution support.
+``` sh
+$ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
+$ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
+$ docker build -t ffmpeg --build-arg FROM_IMAGE=cuda:10.0-cudnn7-devel-ubuntu18.04 ffmpeg-tensorflow/
+```
 
-After installation, you should see `ffmpeg-tensorflow` among your Docker images:
+You should now see `ffmpeg` among your Docker images. Remove auxiliary
+directories and intermediary Docker images downloaded during the installation:
 
 ``` sh
 $ docker images
-REPOSITORY          TAG                     IMAGE ID            CREATED             SIZE
-ffmpeg-tensorflow   latest                  60d2d17efba9        11 seconds ago      2.63GB
+REPOSITORY          TAG                            IMAGE ID            CREATED             SIZE
+ffmpeg              latest                         5d66a25f140b        About an hour ago   5.34GB
+tf-tensorflow-gpu   latest                         7f8c5a76892c        4 hours ago         6.15GB
+$ rm -rf ffmpeg-tensorflow/ tensorflow/
+$ docker rmi 7f8c5a76892c
 ```
 
 ## Prepare super-resolution models
 
 Create and activate a Miniconda environment named `ffmpeg-tensorflow`.
-The version of the `tensorflow-gpu` should match the version of the
-Libtensorflow library that you used during installation:
+Your version of the `tensorflow` package (here 1.15.0) should match the
+version of Libtensorflow that you used during installation:
 
 ``` sh
-$ conda create --name ffmpeg-tensorflow tensorflow-gpu=1.15.0 numpy python=3
+$ conda create --name ffmpeg-tensorflow tensorflow=1.15.0 numpy python=3
 $ conda activate ffmpeg-tensorflow
 ```
 
@@ -65,13 +77,13 @@ checkpoints into super-resolution models:
 
 ``` sh
 $ git clone https://github.com/HighVoltageRocknRoll/sr
-$ cd sr/
+$ pushd sr
 $ python generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn
 $ python generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn
 $ python generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn
 $ python generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet
 $ cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb ..
-$ cd -
+$ popd
 ```
 
 Finally, deactivate and remove the `ffmpeg-tensorflow` Miniconda environment,
@@ -96,27 +108,19 @@ results][model-results] for the super-resolution results are described in the
 
 ## Upscale a video using super-resolution
 
-Download an [example video][flower]. You should now have both super-resolution
-models and the example video in your current directory:
+Download an [example video][flower] and use the `ffmpeg-tensorflow` docker
+image to upscale it using one of the super-resolution models (here ESPCN):
 
 ``` sh
 $ wget https://media.xiph.org/video/derf/y4m/flower_cif.y4m
-$ ls
-espcn.pb flower_cif.y4m srcnn.pb vespcn.pb vsrnet.pb
-```
-
-Use the `ffmpeg-tensorflow` docker image to upscale the example video using one
-of the super-resolution models (here ESPCN):
-
-``` sh
-$ docker run --rm --gpus all -u $(id -u) -v "$PWD":/data -w /data -i ffmpeg-tensorflow \
+$ docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it ffmpeg \
 > -i flower_cif.y4m \
 > -filter_complex '
 >   [0:v] format=pix_fmts=yuv420p, extractplanes=y+u+v [y][u][v];
->   [y] sr=dnn_backend=tensorflow:scale_factor=2:model=espcn.pb [y_scale];
->   [u] scale=iw*2:ih*2 [u_scale];
->   [v] scale=iw*2:ih*2 [v_scale];
->   [y_scale][u_scale][v_scale] mergeplanes=0x001020:yuv420p [merged]
+>   [y] sr=dnn_backend=tensorflow:scale_factor=2:model=espcn.pb [y_scaled];
+>   [u] scale=iw*2:ih*2 [u_scaled];
+>   [v] scale=iw*2:ih*2 [v_scaled];
+>   [y_scaled][u_scaled][v_scaled] mergeplanes=0x001020:yuv420p [merged]
 > ' -map [merged] -sws_flags lanczos \
 > -c:v libx264 -crf 17 -preset ultrafast -tune film \
 > -c:a copy \
@@ -134,13 +138,15 @@ super-resolution model (right):
  [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
+ [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
+ [libtensorflow-1.12.3]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues/1
  [miniconda]: https://docs.conda.io/en/latest/miniconda.html
  [model-architectures]: https://github.com/HighVoltageRocknRoll/sr#image-and-video-super-resolution
  [model-results]: https://github.com/HighVoltageRocknRoll/sr#benchmark-results
  [nvidia-cuda]: https://hub.docker.com/r/nvidia/cuda/
  [nvidia-docker]: https://github.com/NVIDIA/nvidia-docker
- [nvidia-drivers]: https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions
+ [nvidia-driver]: https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions
  [summer-of-code]: https://summerofcode.withgoogle.com/archive/2018/projects/5661133578960896/
  [sr]: https://ffmpeg.org/ffmpeg-filters.html#sr-1
  [tensorflow-compatibility]: https://www.tensorflow.org/install/source#gpu
