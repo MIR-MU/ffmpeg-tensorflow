@@ -39,12 +39,12 @@ $ popd
 
 Next, build our FFMpeg Docker image (takes about 5 minutes on a quad-core
 laptop). [Your `nvidia/cuda` base image][nvidia-cuda] should match your version
-of CUDA (here 10.2-cudnn8).
+of CUDA (here 10.2-cudnn7).
 
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
-$ docker build --build-arg CUDA_VERSION=10.2-cudnn8 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --no-cache --force-rm --squash --build-arg CUDA_VERSION=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 You should now see `ffmpeg-tensorflow` among your Docker images.
