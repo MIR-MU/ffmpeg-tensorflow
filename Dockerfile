@@ -1,4 +1,4 @@
-ARG VERSION_CUDA=10.2-cudnn8
+ARG VERSION_CUDA=10.2-cudnn7
 ARG VERSION_UBUNTU=18.04
 
 FROM nvidia/cuda:${VERSION_CUDA}-devel-ubuntu${VERSION_UBUNTU} as build
