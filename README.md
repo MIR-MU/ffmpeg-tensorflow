@@ -13,19 +13,15 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 - **[NVIDIA Container Toolkit][nvidia-docker]**: For GPU acceleration.
 
 ## Install FFMpeg with Libtensorflow
-
-First, download the pre-built Libtensorflow library from
+First, clone the repo and download the pre-built Libtensorflow library from
 <https://storage.googleapis.com/tensorflow/libtensorflow/>. Your version of
 Libtensorflow (here `1.15.0`) should match your version of CUDA, see [the
 compatibility table][tensorflow-compatibility]. Your version of CUDA should
 match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
 2][nvidia-driver].
-
 ``` sh
-$ mkdir -p tensorflow/lib_package/
-$ pushd tensorflow/lib_package/
-$ wget https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz
-$ popd
+$ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
+$ curl -sL https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz | tar xvz - -C ./ffmpeg-tensorflow/tensorflow
 ```
 
 If your version of Libtensorflow has not been pre-built, you will need to build
@@ -43,12 +39,12 @@ $ popd
 
 Next, build our FFMpeg Docker image (takes about 5 minutes on a quad-core
 laptop). [Your `nvidia/cuda` base image][nvidia-cuda] should match your version
-of CUDA (here 10.0).
+of CUDA (here 10.2-cudnn7).
 
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
-$ docker build --build-arg FROM_IMAGE=nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04 -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --no-cache --force-rm --squash --build-arg CUDA_VERSION=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 You should now see `ffmpeg-tensorflow` among your Docker images.
