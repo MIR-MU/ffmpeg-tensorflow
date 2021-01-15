@@ -21,7 +21,8 @@ match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
 2][nvidia-driver].
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
-$ curl -sL https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz | tar xvz - -C ./ffmpeg-tensorflow/tensorflow
+$ mkdir ffmpeg-tensorflow/tensorflow
+$ curl -sL https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz | tar xvz -C ffmpeg-tensorflow/tensorflow
 ```
 
 If your version of Libtensorflow has not been pre-built, you will need to build
@@ -30,7 +31,7 @@ that need to be taken for some historic versions of Libtensorflow
 ([1.12.3][libtensorflow-1.12.3]) are described in [the issues][issues].
 
 ``` sh
-$ git clone https://github.com/tensorflow/tensorflow.git
+$ git clone https://github.com/tensorflow/tensorflow.git ffmpeg-tensorflow/tensorflow
 $ pushd tensorflow/tensorflow/tools/ci_build/linux/
 $ git checkout v1.15.0
 $ ./libtensorflow_gpu.sh
@@ -39,25 +40,25 @@ $ popd
 
 Next, build our FFMpeg Docker image (takes about 5 minutes on a quad-core
 laptop). [Your `nvidia/cuda` base image][nvidia-cuda] should match your version
-of CUDA (here 10.2-cudnn7).
+of CUDA (here 10.2-cudnn7). Remove [the `--squash` parameter][docker-squash] if
+your Docker daemon does not support [experimental features][docker-experimental].
 
 ``` sh
-$ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
-$ tar xzvf tensorflow/lib_package/libtensorflow-gpu*.tar.gz -C ffmpeg-tensorflow/
-$ docker build --compress --no-cache --force-rm --squash --build-arg CUDA_VERSION=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --force-rm --squash --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-You should now see `ffmpeg-tensorflow` among your Docker images.
-Remove auxiliary files and intermediary Docker images downloaded during
-the installation:
+You should now see `ffmpeg-tensorflow` among your Docker images. You can now
+remove auxiliary files and intermediary Docker images downloaded during the
+installation.
 
 ``` sh
-$ rm -rf ffmpeg-tensorflow/ tensorflow/
+$ rm -rf ffmpeg-tensorflow/
 $ docker images
-REPOSITORY          TAG                            IMAGE ID            CREATED             SIZE
-ffmpeg-tensorflow   latest                         5d66a25f140b        About an hour ago   5.34GB
-tf-tensorflow-gpu   latest                         7f8c5a76892c        4 hours ago         6.15GB
-$ docker rmi 7f8c5a76892c
+REPOSITORY          TAG                               IMAGE ID            CREATED             SIZE
+ffmpeg-tensorflow   latest                            fe863621c793        14 minutes ago      2.81GB
+nvidia/cuda         10.2-cudnn7-devel-ubuntu18.04     609f7706d5fb        2 days ago          3.86GB
+nvidia/cuda         10.2-cudnn7-runtime-ubuntu18.04   0605733369e2        2 days ago          1.76GB
+$ docker rmi 609f7706d5fb 0605733369e2
 ```
 
 ## Prepare super-resolution models
@@ -135,6 +136,8 @@ super-resolution model (right):
  [div2k]: https://data.vision.ee.ethz.ch/cvl/DIV2K/
  [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
+ [docker-experimental]: https://github.com/docker/cli/blob/master/experimental/README.md
+ [docker-squash]: https://github.com/docker/cli/blob/master/docs/reference/commandline/build.md#squash-an-images-layers---squash-experimental
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
