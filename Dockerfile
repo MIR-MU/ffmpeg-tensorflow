@@ -67,7 +67,7 @@ ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 
 FROM nvidia/cuda:${VERSION_CUDA}-runtime-ubuntu${VERSION_UBUNTU}
 
-LABEL authors="Vít Novotný <witiko@mail.muni.cz>,Mikuláš Miki Bankovič" \
+LABEL authors="Vít Novotný <witiko@mail.muni.cz>,Mikuláš Bankovič <456421@mail.muni.cz>,Dirk Lüth <dirk.lueth@gmail.com>" \
       org.label-schema.docker.dockerfile="/Dockerfile" \
       org.label-schema.name="jetson.ffmpeg"
 
