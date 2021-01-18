@@ -1,7 +1,7 @@
 name: Build
 on:
-  # push:
-  #  branches: [ master ]
+  push:
+    branches: [ master ]
   workflow_dispatch:
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -30,11 +30,11 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: environment
-      #- name: Authenticate registry
-      #  uses: azure/docker-login@v1
-      #  with:
-      #    username: ${{ secrets.DOCKER_HUB_USER }}
-      #    password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Authenticate registry
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Configure system
         run: |
           # update packages & install requirements
@@ -55,7 +55,7 @@ jobs:
         run: |
           source ./environment/vars
 
-          docker build --compress --no-cache --force-rm --squash -t mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} .
-          # docker tag mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} mir-mu/ffmpeg-tensorflow:latest
-          # docker push mir-mu/ffmpeg-tensorflow:${DOCKER_TAG}
-          # docker push mir-mu/ffmpeg-tensorflow:latest
+          docker build --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow:${DOCKER_TAG} .
+          docker tag miratmu/ffmpeg-tensorflow:${DOCKER_TAG} miratmu/ffmpeg-tensorflow:latest
+          docker push miratmu/ffmpeg-tensorflow:${DOCKER_TAG}
+          docker push miratmu/ffmpeg-tensorflow:latest
