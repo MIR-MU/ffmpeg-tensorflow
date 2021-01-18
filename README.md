@@ -23,13 +23,13 @@ $ docker build --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tenso
 
 If you wish to use different versions of Libtensorflow, FFMpeg, or CUDA, you
 can also build a customized container. Keep in mind that your version of
-Libtensorflow (here `1.15.0`) should match your version of CUDA (here ≥ 10.2),
+Libtensorflow (here `1.15.0`) should match your version of CUDA (here ≥ 10.0),
 see [the compatibility table][tensorflow-compatibility]. Your version of CUDA
 should match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
 2][nvidia-driver]:
 
 ``` sh
-$ docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.0-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 You should now see `miratmu/ffmpeg-tensorflow` among your Docker images:
