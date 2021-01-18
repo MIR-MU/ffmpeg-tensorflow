@@ -1,0 +1,61 @@
+name: Build
+on:
+  # push:
+  #  branches: [ master ]
+  workflow_dispatch:
+env:
+  DEBIAN_FRONTEND: noninteractive
+  TEMPORARY_DIRECTORY: /home/runner/work/_temp
+jobs:
+  preparation:
+    name: Preparation
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Create environment
+        run: |
+          echo "export DOCKER_TAG=\"${GITHUB_SHA}-$(date +'%Y%m%d-%H%M%S')\"" >> ./vars
+      - name: Persist environment
+        uses: actions/upload-artifact@v1
+        with:
+          name: environment
+          path: ./vars
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    needs: [preparation]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Fetch environment
+        uses: actions/download-artifact@v1
+        with:
+          name: environment
+      #- name: Authenticate registry
+      #  uses: azure/docker-login@v1
+      #  with:
+      #    username: ${{ secrets.DOCKER_HUB_USER }}
+      #    password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Configure system
+        run: |
+          # update packages & install requirements
+            sudo apt-get -qy update
+            sudo apt-get -qy install moreutils
+
+          # enable Dockers experimental features
+            if [[ -z "${DOCKER_CONFIG}" ]]; then
+              export DOCKER_CONFIG="${TEMPORARY_DIRECTORY}/docker.$(date +%s)"
+              mkdir -p ${DOCKER_CONFIG}
+              touch ${DOCKER_CONFIG}/config.json
+            fi
+
+            sudo sh -c "jq -s 'add' ${DOCKER_CONFIG}/config.json ./.docker/config.json | sponge ${DOCKER_CONFIG}/config.json"
+            sudo sh -c "jq . ./.docker/daemon.json | sponge /etc/docker/daemon.json"
+            sudo service docker restart
+      - name: Build image
+        run: |
+          source ./environment/vars
+
+          docker build --compress --no-cache --force-rm --squash -t mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} .
+          # docker tag mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} mir-mu/ffmpeg-tensorflow:latest
+          # docker push mir-mu/ffmpeg-tensorflow:${DOCKER_TAG}
+          # docker push mir-mu/ffmpeg-tensorflow:latest

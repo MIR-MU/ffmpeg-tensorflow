@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+set -f
+
+apt-get -qy update
+
+cat << EOT >> /etc/apt/apt.conf.d/docker-minify
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";
+EOT
+
+cat << EOT >> /etc/dpkg/dpkg.cfg.d/docker-minify
+path-exclude=/usr/share/locale/*
+path-exclude=/usr/share/man/*
+path-exclude=/usr/share/doc/*
+path-include=/usr/share/doc/*/copyright
+EOT
+
+apt-get dist-upgrade -qy
+
+if [[ -n "${DEPENDENCIES}" ]]; then
+  apt-get install -qy ${DEPENDENCIES}
+fi

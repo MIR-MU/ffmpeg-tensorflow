@@ -13,46 +13,28 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 - **[NVIDIA Container Toolkit][nvidia-docker]**: For GPU acceleration.
 
 ## Install FFMpeg with Libtensorflow
-First, clone the repo and download the pre-built Libtensorflow library from
-<https://storage.googleapis.com/tensorflow/libtensorflow/>. Your version of
+Simply clone the repo and build the container with the following commands
+``` sh
+$ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
+$ docker build --compress --no-cache --force-rm --squash -t ffmpeg-tensorflow ffmpeg-tensorflow/
+```
+
+If you wish to use different versions of Libtensorflow, FFMpeg or CUDA you 
+can also build a customized container. Keep in mind that your version of
 Libtensorflow (here `1.15.0`) should match your version of CUDA, see [the
 compatibility table][tensorflow-compatibility]. Your version of CUDA should
 match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
 2][nvidia-driver].
 ``` sh
-$ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
-$ mkdir ffmpeg-tensorflow/tensorflow
-$ curl -sL https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-1.15.0.tar.gz | tar xvz -C ffmpeg-tensorflow/tensorflow
+$ docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-If your version of Libtensorflow has not been pre-built, you will need to build
-it yourself, which takes about 2 hours on a quad-core laptop. Specific steps
-that need to be taken for some historic versions of Libtensorflow
-([1.12.3][libtensorflow-1.12.3]) are described in [the issues][issues].
+You should now see `ffmpeg-tensorflow` among your Docker images.
+Remove auxiliary files and intermediary Docker images downloaded during
+the installation:
 
 ``` sh
-$ git clone https://github.com/tensorflow/tensorflow.git ffmpeg-tensorflow/tensorflow
-$ pushd tensorflow/tensorflow/tools/ci_build/linux/
-$ git checkout v1.15.0
-$ ./libtensorflow_gpu.sh
-$ popd
-```
-
-Next, build our FFMpeg Docker image (takes about 5 minutes on a quad-core
-laptop). [Your `nvidia/cuda` base image][nvidia-cuda] should match your version
-of CUDA (here 10.2-cudnn7). Remove [the `--squash` parameter][docker-squash] if
-your Docker daemon does not support [experimental features][docker-experimental].
-
-``` sh
-$ docker build --compress --force-rm --squash --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=release/4.3 -t ffmpeg-tensorflow ffmpeg-tensorflow/
-```
-
-You should now see `ffmpeg-tensorflow` among your Docker images. You can now
-remove auxiliary files and intermediary Docker images downloaded during the
-installation.
-
-``` sh
-$ rm -rf ffmpeg-tensorflow/
+$ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker images
 REPOSITORY          TAG                               IMAGE ID            CREATED             SIZE
 ffmpeg-tensorflow   latest                            fe863621c793        14 minutes ago      2.81GB
