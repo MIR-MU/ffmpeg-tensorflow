@@ -126,7 +126,7 @@ super-resolution model (right):
  [div2k]: https://data.vision.ee.ethz.ch/cvl/DIV2K/
  [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
- [docker-hub]: https://hub.docker.com/r/miratmu/ffmpeg-tensorflow/tags
+ [docker-hub]: https://hub.docker.com/r/miratmu/ffmpeg-tensorflow
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
