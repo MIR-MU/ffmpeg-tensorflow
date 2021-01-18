@@ -19,7 +19,7 @@ jobs:
         with:
           name: environment
           path: ./vars
-  build:
+  amd64:
     name: Build
     runs-on: ubuntu-18.04
     needs: [preparation]
@@ -50,17 +50,17 @@ jobs:
         run: |
           source ./environment/vars
 
-          docker build --compress --no-cache --force-rm --squash -t MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG}-amd64 -f Dockerfile.amd64 .
-          docker save MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG}-amd64 > ./amd64
+          docker build --compress --no-cache --force-rm --squash -t MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} .
+          docker save MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} > ./amd64
       - name: Persist artifact
         uses: actions/upload-artifact@v1
         with:
           name: images
           path: ./amd64
   publish:
-    name: Process multi-arch
+    name: Publish
     runs-on: ubuntu-18.04
-    needs: [preparation, build]
+    needs: [preparation, amd64]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -96,8 +96,6 @@ jobs:
       - name: Import artifacts
         run: |
           docker load --input ./images/amd64
-          docker load --input ./images/arm32v7
-          docker load --input ./images/arm64v8
       - name: Push version to registry
         run: |
           source ./environment/vars
@@ -108,4 +106,4 @@ jobs:
           source ./environment/vars
 
           # docker tag MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} MIR-MU/ffmpeg-tensorflow:latest
-          # docker push MIR-MU/ffmpeg-tensorflow:latest-${ARCH}
+          # docker push MIR-MU/ffmpeg-tensorflow:latest
