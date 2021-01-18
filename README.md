@@ -21,8 +21,8 @@ $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ docker build --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-If you wish to use different versions of Libtensorflow, FFMpeg, or CUDA, you
-can also build a customized container. Keep in mind that your version of
+If you wish to use different versions of Libtensorflow, FFMpeg, CUDA, or Ubuntu
+you can also build a customized container. Keep in mind that your version of
 Libtensorflow (here `1.15.0`) should match your version of CUDA (here ≥ 10.0),
 see [the compatibility table][tensorflow-compatibility]. Your version of CUDA
 should match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
