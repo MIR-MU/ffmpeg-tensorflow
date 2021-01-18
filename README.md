@@ -13,13 +13,14 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 - **[NVIDIA Container Toolkit][nvidia-docker]**: For GPU acceleration.
 
 ## Install FFMpeg with Libtensorflow
+
 Simply clone the repo and build the container with the following commands
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
 $ docker build --compress --no-cache --force-rm --squash -t ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-If you wish to use different versions of Libtensorflow, FFMpeg or CUDA you 
+If you wish to use different versions of Libtensorflow, FFMpeg, or CUDA, you
 can also build a customized container. Keep in mind that your version of
 Libtensorflow (here `1.15.0`) should match your version of CUDA, see [the
 compatibility table][tensorflow-compatibility]. Your version of CUDA should
@@ -37,10 +38,7 @@ the installation:
 $ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker images
 REPOSITORY          TAG                               IMAGE ID            CREATED             SIZE
-ffmpeg-tensorflow   latest                            fe863621c793        14 minutes ago      2.81GB
-nvidia/cuda         10.2-cudnn7-devel-ubuntu18.04     609f7706d5fb        2 days ago          3.86GB
-nvidia/cuda         10.2-cudnn7-runtime-ubuntu18.04   0605733369e2        2 days ago          1.76GB
-$ docker rmi 609f7706d5fb 0605733369e2
+ffmpeg-tensorflow   latest                            894fc02dd2a2        14 minutes ago      2.41GB
 ```
 
 ## Prepare super-resolution models
@@ -124,7 +122,6 @@ super-resolution model (right):
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
  [issues]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues?q=is%3Aissue
- [libtensorflow-1.12.3]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues/1
  [miniconda]: https://docs.conda.io/en/latest/miniconda.html
  [model-architectures]: https://github.com/HighVoltageRocknRoll/sr#image-and-video-super-resolution
  [model-results]: https://github.com/HighVoltageRocknRoll/sr#benchmark-results
