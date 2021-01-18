@@ -59,8 +59,3 @@ jobs:
           # docker tag mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} mir-mu/ffmpeg-tensorflow:latest
           # docker push mir-mu/ffmpeg-tensorflow:${DOCKER_TAG}
           # docker push mir-mu/ffmpeg-tensorflow:latest
-      - name: Persist artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: images
-          path: ./amd64
