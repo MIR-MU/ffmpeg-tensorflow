@@ -50,8 +50,8 @@ jobs:
         run: |
           source ./environment/vars
 
-          docker build --compress --no-cache --force-rm --squash -t MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} .
-          docker save MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} > ./amd64
+          docker build --compress --no-cache --force-rm --squash -t mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} .
+          docker save mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} > ./amd64
       - name: Persist artifact
         uses: actions/upload-artifact@v1
         with:
@@ -100,10 +100,10 @@ jobs:
         run: |
           source ./environment/vars
 
-          # docker push MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG}
+          # docker push mir-mu/ffmpeg-tensorflow:${DOCKER_TAG}
       - name: Push latest to registry
         run: |
           source ./environment/vars
 
-          # docker tag MIR-MU/ffmpeg-tensorflow:${DOCKER_TAG} MIR-MU/ffmpeg-tensorflow:latest
-          # docker push MIR-MU/ffmpeg-tensorflow:latest
+          # docker tag mir-mu/ffmpeg-tensorflow:${DOCKER_TAG} mir-mu/ffmpeg-tensorflow:latest
+          # docker push mir-mu/ffmpeg-tensorflow:latest
