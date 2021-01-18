@@ -36,10 +36,11 @@ the installation:
 ``` sh
 $ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker images
-REPOSITORY          TAG                            IMAGE ID            CREATED             SIZE
-ffmpeg-tensorflow   latest                         5d66a25f140b        About an hour ago   2.41GB
-tf-tensorflow-gpu   latest                         7f8c5a76892c        4 hours ago         6.07GB
-$ docker rmi 7f8c5a76892c
+REPOSITORY          TAG                               IMAGE ID            CREATED             SIZE
+ffmpeg-tensorflow   latest                            fe863621c793        14 minutes ago      2.81GB
+nvidia/cuda         10.2-cudnn7-devel-ubuntu18.04     609f7706d5fb        2 days ago          3.86GB
+nvidia/cuda         10.2-cudnn7-runtime-ubuntu18.04   0605733369e2        2 days ago          1.76GB
+$ docker rmi 609f7706d5fb 0605733369e2
 ```
 
 ## Prepare super-resolution models
@@ -117,6 +118,8 @@ super-resolution model (right):
  [div2k]: https://data.vision.ee.ethz.ch/cvl/DIV2K/
  [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
+ [docker-experimental]: https://github.com/docker/cli/blob/master/experimental/README.md
+ [docker-squash]: https://github.com/docker/cli/blob/master/docs/reference/commandline/build.md#squash-an-images-layers---squash-experimental
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
