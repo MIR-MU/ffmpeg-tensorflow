@@ -12,34 +12,43 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 - **[Docker][]**: For running containerized FFMpeg with super-resolution support.
 - **[NVIDIA Container Toolkit][nvidia-docker]**: For GPU acceleration.
 
-## Install FFMpeg with Libtensorflow
+## Install FFMpeg with Libtensorflow (Optional)
 
-Simply clone the repo and build the container with the following commands
+Simply clone the repo and build the container with the following commands:
+
 ``` sh
 $ git clone https://github.com/MIR-MU/ffmpeg-tensorflow.git
-$ docker build --compress --no-cache --force-rm --squash -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 If you wish to use different versions of Libtensorflow, FFMpeg, or CUDA, you
 can also build a customized container. Keep in mind that your version of
-Libtensorflow (here `1.15.0`) should match your version of CUDA, see [the
-compatibility table][tensorflow-compatibility]. Your version of CUDA should
-match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
-2][nvidia-driver].
+Libtensorflow (here `1.15.0`) should match your version of CUDA (here ≥ 10.2),
+see [the compatibility table][tensorflow-compatibility]. Your version of CUDA
+should match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
+2][nvidia-driver]:
+
 ``` sh
-$ docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t ffmpeg-tensorflow ffmpeg-tensorflow/
+$ docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.2-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
-You should now see `ffmpeg-tensorflow` among your Docker images.
-Remove auxiliary files and intermediary Docker images downloaded during
-the installation:
+You should now see `miratmu/ffmpeg-tensorflow` among your Docker images:
 
 ``` sh
-$ rm -rf ffmpeg-tensorflow/ tensorflow/
 $ docker images
-REPOSITORY          TAG                               IMAGE ID            CREATED             SIZE
-ffmpeg-tensorflow   latest                            894fc02dd2a2        14 minutes ago      2.41GB
+REPOSITORY                  TAG                               IMAGE ID            CREATED              SIZE
+miratmu/ffmpeg-tensorflow   latest                            20789892302c        About a minute ago   2.41GB
 ```
+
+You can now remove the downloaded during the installation:
+
+``` sh
+$ rm -rf ffmpeg-tensorflow/
+```
+
+If you skip this section, a pre-build Docker image will be downloaded from
+[Docker Hub][docker-hub] when you try to upscale a video using
+super-resolution.
 
 ## Prepare super-resolution models
 
@@ -90,12 +99,13 @@ results][model-results] for the super-resolution results are described in the
 
 ## Upscale a video using super-resolution
 
-Download an [example video][flower] and use the `ffmpeg-tensorflow` docker
-image to upscale it using one of the super-resolution models (here ESPCN):
+Download an [example video][flower] and use the `miratmu/ffmpeg-tensorflow`
+docker image to upscale it using one of the super-resolution models (here
+ESPCN):
 
 ``` sh
 $ wget https://media.xiph.org/video/derf/y4m/flower_cif.y4m
-$ alias ffmpeg-tensorflow='docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it ffmpeg-tensorflow'
+$ alias ffmpeg-tensorflow='docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it miratmu/ffmpeg-tensorflow'
 $ ffmpeg-tensorflow -i flower_cif.y4m -filter_complex '
 >   [0:v] format=pix_fmts=yuv420p, extractplanes=y+u+v [y][u][v];
 >   [y] sr=dnn_backend=tensorflow:scale_factor=2:model=espcn.pb [y_scaled];
@@ -116,8 +126,7 @@ super-resolution model (right):
  [div2k]: https://data.vision.ee.ethz.ch/cvl/DIV2K/
  [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
- [docker-experimental]: https://github.com/docker/cli/blob/master/experimental/README.md
- [docker-squash]: https://github.com/docker/cli/blob/master/docs/reference/commandline/build.md#squash-an-images-layers---squash-experimental
+ [docker-hub]: https://hub.docker.com/r/miratmu/ffmpeg-tensorflow/tags
  [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
