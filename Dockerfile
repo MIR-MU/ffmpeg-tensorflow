@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     CLEANUP="/usr/local/lib/libcuda.so.1"
 
 COPY script/ /usr/local/sbin/
-
+ 
 RUN set -e && bootstrap \
     ### create required symlinks &directories
         && ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1 \
@@ -41,6 +41,21 @@ RUN set -e && bootstrap \
         && make -j $(nproc) \
         && make install \
         && cd ~ \
+    ### prepare sr models
+        && apt-get install -y python3 python3-pip git \
+        && python3 -m pip install --upgrade pip \
+	&& pip3 install setuptools wheel \
+	&& pip3 install tensorflow==${VERSION_LIBTENSORFLOW} numpy \ 
+	&& git clone https://github.com/HighVoltageRocknRoll/sr \
+	&& cd sr \
+	&& python3 generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn \
+	&& python3 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn \ 
+	&& python3 generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn \
+	&& python3 generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet \ 
+	&& mkdir /usr/models/ \
+	&& cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb /usr/models/ \
+	&& cd .. \
+	&& rm -rf sr/ \
     ### persist dependencies
         && ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;' \
         && mv /usr/local/lib/libtensorflow* /deps/usr/local/lib \
@@ -62,6 +77,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 COPY script/ /usr/local/sbin/
 COPY --from=build /deps /
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=build /usr/models/ /usr/models/
 
 RUN set -e && bootstrap && finalize
 
