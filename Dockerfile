@@ -44,18 +44,18 @@ RUN set -e && bootstrap \
     ### prepare sr models
         && apt-get install -y python3 python3-pip git \
         && python3 -m pip install --upgrade pip \
-	&& pip3 install setuptools wheel \
-	&& pip3 install tensorflow==${VERSION_LIBTENSORFLOW} numpy \ 
-	&& git clone https://github.com/HighVoltageRocknRoll/sr \
-	&& cd sr \
-	&& python3 generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn \
-	&& python3 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn \ 
-	&& python3 generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn \
-	&& python3 generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet \ 
-	&& mkdir /usr/models/ \
-	&& cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb /usr/models/ \
-	&& cd .. \
-	&& rm -rf sr/ \
+        && pip3 install setuptools wheel \
+        && pip3 install tensorflow==${VERSION_LIBTENSORFLOW} numpy \
+        && git clone https://github.com/HighVoltageRocknRoll/sr \
+        && cd sr \
+        && python3 generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn \
+        && python3 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn \
+        && python3 generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn \
+        && python3 generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet \
+        && mkdir /usr/models/ \
+        && cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb /usr/local/share/ffmpeg-tensorflow-models/ \
+        && cd .. \
+        && rm -rf sr/ \
     ### persist dependencies
         && ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;' \
         && mv /usr/local/lib/libtensorflow* /deps/usr/local/lib \
@@ -77,8 +77,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
 COPY script/ /usr/local/sbin/
 COPY --from=build /deps /
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=build /usr/models/ /usr/models/
+COPY --from=build /usr/local/share/ffmpeg-tensorflow-models/ /usr/local/share/ffmpeg-tensorflow-models/
 
-RUN set -e && bootstrap && finalize
+RUN set -e && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models && bootstrap && finalize
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
