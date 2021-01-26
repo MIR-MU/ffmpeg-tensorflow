@@ -8,7 +8,7 @@ Dockerfile that makes super-resolution in FFMpeg a breeze!
 
 ## Requirements
 
-- **[Miniconda][]**: For producing pre-trained super-resolution models.
+- **[Miniconda][]**: For producing pre-trained custom super-resolution models. (Optional)
 - **[Docker][]**: For running containerized FFMpeg with super-resolution support.
 - **[NVIDIA Container Toolkit][nvidia-docker]**: For GPU acceleration.
 
@@ -50,8 +50,16 @@ If you skip this section, a pre-build Docker image will be downloaded from
 [Docker Hub][docker-hub] when you try to upscale a video using
 super-resolution.
 
-## Prepare super-resolution models
 
+## Use super-resolution models build within docker image 
+
+Basic super-resolution models introduced in [the `HighVoltageRocknRoll/sr` GitHub
+repository][HighVoltageRocknRoll/sr] are already built and prepared in `/usr/models/` given 
+the tensorflow version provided.
+
+
+
+## Prepare super-resolution models (Optional)
 Create and activate a Miniconda environment named `ffmpeg-tensorflow`.
 Your version of the `tensorflow` package (here 1.15.0) should match the
 version of Libtensorflow that you used during installation:
@@ -107,13 +115,13 @@ ESPCN):
 $ wget https://media.xiph.org/video/derf/y4m/flower_cif.y4m
 $ alias ffmpeg-tensorflow='docker run --rm --gpus all -u $(id -u):$(id -g) -v "$PWD":/data -w /data -it miratmu/ffmpeg-tensorflow'
 $ ffmpeg-tensorflow -i flower_cif.y4m -filter_complex '
->   [0:v] format=pix_fmts=yuv420p, extractplanes=y+u+v [y][u][v];
->   [y] sr=dnn_backend=tensorflow:scale_factor=2:model=espcn.pb [y_scaled];
->   [u] scale=iw*2:ih*2 [u_scaled];
->   [v] scale=iw*2:ih*2 [v_scaled];
->   [y_scaled][u_scaled][v_scaled] mergeplanes=0x001020:yuv420p [merged]
-> ' -map [merged] -sws_flags lanczos -c:v libx264 -crf 17 -c:a copy \
-> -y flower_cif_2x.mp4
+[0:v] format=pix_fmts=yuv420p, extractplanes=y+u+v [y][u][v];
+[y] sr=dnn_backend=tensorflow:scale_factor=2:model=/models/espcn.pb [y_scaled];
+[u] scale=iw*2:ih*2 [u_scaled];
+[v] scale=iw*2:ih*2 [v_scaled];
+[y_scaled][u_scaled][v_scaled] mergeplanes=0x001020:yuv420p [merged]
+' -map [merged] -sws_flags lanczos -c:v libx264 -crf 17 -c:a copy \
+-y flower_cif_2x.mp4
 ```
 
 The `flower_cif_2x.mp4` file with the upscaled example video should be produced.
