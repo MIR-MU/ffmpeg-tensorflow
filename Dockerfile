@@ -52,7 +52,7 @@ RUN set -e && bootstrap \
         && python3 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn \
         && python3 generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn \
         && python3 generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet \
-        && mkdir /usr/models/ \
+        && mkdir /usr/local/share/ffmpeg-tensorflow-models/ \
         && cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb /usr/local/share/ffmpeg-tensorflow-models/ \
         && cd .. \
         && rm -rf sr/ \
