@@ -17,4 +17,6 @@ rm -rf /tmp/* /var/tmp/* /var/log/* /var/lib/apt/lists/* /var/lib/{apt,dpkg,cach
 find /usr/share/doc -depth -type f ! -name "copyright" -delete
 find /usr/share/doc -empty -type d -delete
 
+set +o nounset
+
 . ~/.profile
