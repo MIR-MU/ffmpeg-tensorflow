@@ -2,7 +2,6 @@
 
 set -o errexit
 set -o pipefail
-set -o nounset
 set -o xtrace
 
 if [[ -n "${DEPENDENCIES}" ]]; then
@@ -16,7 +15,5 @@ apt-get -qy autoremove --purge
 rm -rf /tmp/* /var/tmp/* /var/log/* /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/* /usr/share/man/* /usr/share/locale/* /var/cache/apt/* ${CLEANUP}
 find /usr/share/doc -depth -type f ! -name "copyright" -delete
 find /usr/share/doc -empty -type d -delete
-
-set +o nounset
 
 . ~/.profile
