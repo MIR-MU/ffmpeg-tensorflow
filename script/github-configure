@@ -5,6 +5,8 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
+source ./environment/vars
+
 # update packages & install requirements
 sudo apt-get -qy update
 sudo apt-get -qy install moreutils

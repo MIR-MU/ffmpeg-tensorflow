@@ -21,5 +21,5 @@ EOT
 apt-get dist-upgrade -qy
 
 if [[ -n "${DEPENDENCIES}" ]]; then
-  apt-get install -qy ${DEPENDENCIES}
+  apt-get install -qy "${DEPENDENCIES}"
 fi
