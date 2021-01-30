@@ -30,8 +30,8 @@ jobs:
         with:
           name: environment
       - name: Configure system
-        run: script/github-configure
+        run: script/github-configure.sh
       - name: Build image
-        run: script/github-build
+        run: script/github-build.sh
       - name: Test image
-        run: script/github-test
+        run: script/github-test.sh

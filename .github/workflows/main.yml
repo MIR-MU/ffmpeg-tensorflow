@@ -36,10 +36,10 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Configure system
-        run: script/github-configure
+        run: script/github-configure.sh
       - name: Build image
-        run: script/github-build
+        run: script/github-build.sh
       - name: Publish image
-        run: script/github-publish
+        run: script/github-publish.sh
       - name: Test image
-        run: script/github-test
+        run: script/github-test.sh
