@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-source ./environment/vars
+source ./vars
 
 # update packages & install requirements
 sudo apt-get -qy update
