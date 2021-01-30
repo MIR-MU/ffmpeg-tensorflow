@@ -43,4 +43,3 @@ jobs:
         run: script/github-publish
       - name: Test image
         run: script/github-test
-

@@ -10,8 +10,9 @@ sudo apt-get -qy update
 sudo apt-get -qy install moreutils
 
 # enable Dockers experimental features
-if [[ -z "${DOCKER_CONFIG}" ]]; then
-  export DOCKER_CONFIG="${TEMPORARY_DIRECTORY}/docker.$(date +%s)"
+if [[ -z ${DOCKER_CONFIG} ]]; then
+  DOCKER_CONFIG="${TEMPORARY_DIRECTORY}/docker.$(date +%s)"
+  export DOCKER_CONFIG
   mkdir -p ${DOCKER_CONFIG}
   touch ${DOCKER_CONFIG}/config.json
 fi
