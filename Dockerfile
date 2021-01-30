@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 COPY script/ /usr/local/sbin/
  
-RUN set -e && bootstrap \
+RUN set -e && bootstrap.sh \
     ### create required symlinks &directories
         && ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1 \
         && mkdir -p /tmp/ffmpeg /deps /deps/usr/local/lib \
@@ -60,7 +60,7 @@ RUN set -e && bootstrap \
         && ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;' \
         && mv /usr/local/lib/libtensorflow* /deps/usr/local/lib \
     ### finalize
-        && finalize
+        && finalize.sh
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 
@@ -79,6 +79,6 @@ COPY --from=build /deps /
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=build /usr/local/share/ffmpeg-tensorflow-models/ /usr/local/share/ffmpeg-tensorflow-models/
 
-RUN set -e && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models && bootstrap && finalize
+RUN set -e && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models && bootstrap.sh && finalize.sh
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
