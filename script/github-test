@@ -14,7 +14,7 @@ SIZE=$(ffprobe -v error -show_entries stream=width,height -of csv=p=0:s=x flower
 if [ $((${SIZE%%x*}*2)) != $((${UPSCALE_SIZE%%x*})) ]; then
   exit 1
 fi
-K
+
 if [ $((${SIZE##*x}*2)) != $((${UPSCALE_SIZE##*x})) ]; then
   exit 1
 fi
