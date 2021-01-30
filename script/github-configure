@@ -5,12 +5,14 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
+source ./environment/vars
+
 # update packages & install requirements
 sudo apt-get -qy update
 sudo apt-get -qy install moreutils
 
 # enable Dockers experimental features
-if [[ -z ${DOCKER_CONFIG} ]]; then
+if [[ -z "${DOCKER_CONFIG}" ]]; then
   DOCKER_CONFIG="${TEMPORARY_DIRECTORY}/docker.$(date +%s)"
   export DOCKER_CONFIG
   mkdir -p ${DOCKER_CONFIG}
