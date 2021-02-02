@@ -41,3 +41,5 @@ jobs:
         run: script/github-build
       - name: Publish image
         run: script/github-publish
+      - name: Test image
+        run: script/github-test

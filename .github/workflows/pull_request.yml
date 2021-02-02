@@ -33,3 +33,5 @@ jobs:
         run: script/github-configure
       - name: Build image
         run: script/github-build
+      - name: Test image
+        run: script/github-test
