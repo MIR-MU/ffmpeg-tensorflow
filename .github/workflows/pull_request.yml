@@ -13,10 +13,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Fetch environment
-        uses: actions/download-artifact@v1
-        with:
-          name: environment
       - name: Configure system
         run: script/github-configure
       - name: Build image
