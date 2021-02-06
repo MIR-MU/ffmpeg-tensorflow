@@ -1,0 +1,41 @@
+diff --git a/tensorflow/tools/ci_build/Dockerfile.gpu b/tensorflow/tools/ci_build/Dockerfile.gpu
+index a4cad4b6c6..40273041c6 100644
+--- a/tensorflow/tools/ci_build/Dockerfile.gpu
++++ b/tensorflow/tools/ci_build/Dockerfile.gpu
+@@ -15,6 +15,10 @@ RUN add-apt-repository -y ppa:openjdk-r/ppa && \
+     add-apt-repository -y ppa:george-edison55/cmake-3.x
+ RUN /install/install_deb_packages.sh
+ 
++# Install NCCL
++RUN apt-get update && apt-get install -y --no-install-recommends \
++    libnccl2=2.2.13-1+cuda9.0 libnccl-dev=2.2.13-1+cuda9.0
++
+ RUN /install/install_pip_packages.sh
+ RUN /install/install_bazel.sh
+ RUN /install/install_golang.sh
+diff --git a/tensorflow/tools/ci_build/linux/libtensorflow_docker.sh b/tensorflow/tools/ci_build/linux/libtensorflow_docker.sh
+index 467b8dc808..9c6e87d4d9 100755
+--- a/tensorflow/tools/ci_build/linux/libtensorflow_docker.sh
++++ b/tensorflow/tools/ci_build/linux/libtensorflow_docker.sh
+@@ -58,7 +58,7 @@ ${DOCKER_BINARY} run \
+   -e "TF_NEED_HDFS=0" \
+   -e "TF_NEED_CUDA=${TF_NEED_CUDA}" \
+   -e "TF_NEED_TENSORRT=${TF_NEED_CUDA}" \
+-  -e "TF_NEED_ROCM=${TF_NEED_ROCM}" \
++  -e "TF_NEED_ROCM=0" \
+   -e "TF_NEED_OPENCL_SYCL=0" \
+   "${DOCKER_IMAGE}" \
+   "/workspace/tensorflow/tools/ci_build/linux/libtensorflow.sh"
+diff --git a/third_party/icu/workspace.bzl b/third_party/icu/workspace.bzl
+index bfebf4219b..cffa1e1a46 100644
+--- a/third_party/icu/workspace.bzl
++++ b/third_party/icu/workspace.bzl
+@@ -6,7 +6,7 @@ def repo():
+     third_party_http_archive(
+         name = "icu",
+         strip_prefix = "icu-release-62-1",
+-        sha256 = "e15ffd84606323cbad5515bf9ecdf8061cc3bf80fb883b9e6aa162e485aa9761",
++        sha256 = "86b85fbf1b251d7a658de86ce5a0c8f34151027cc60b01e1b76f167379acf181",
+         urls = [
+             "https://mirror.bazel.build/github.com/unicode-org/icu/archive/release-62-1.tar.gz",
+             "https://github.com/unicode-org/icu/archive/release-62-1.tar.gz",

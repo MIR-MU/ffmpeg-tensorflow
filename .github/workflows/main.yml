@@ -7,18 +7,6 @@ env:
   DEBIAN_FRONTEND: noninteractive
   TEMPORARY_DIRECTORY: /home/runner/work/_temp
 jobs:
-  preparation:
-    name: Preparation
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Create environment
-        run: |
-          echo "export DOCKER_TAG=\"${GITHUB_SHA}-$(date +'%Y%m%d-%H%M%S')\"" >> ./vars
-      - name: Persist environment
-        uses: actions/upload-artifact@v1
-        with:
-          name: environment
-          path: ./vars
   build:
     name: Build
     runs-on: ubuntu-18.04

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+curl -kLs https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-$1.tar.gz | tar -xzC /usr/local -f -
+
+if [[ $? != 0 ]]
+then
+  TEMPDIR=$(mktemp -d)
+  trap 'rm -r $TEMPDIR' EXIT
+
+  pushd $TEMPDIR
+  git clone https://github.com/tensorflow/tensorflow.git
+  pushd tensorflow/tensorflow/tools/ci_build/linux/
+  git checkout v$1
+  if [[ -e /tmp/patch/libtensorflow-$1.diff ]]
+    pushd ../../../..
+    git apply /tmp/patch/libtensorflow-$1.diff
+    popd
+  fi
+  ./libtensorflow_gpu.sh
+  popd
+  popd
+fi

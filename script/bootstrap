@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o pipefail
+set -o nounset
 set -o xtrace
 
 apt-get -qy update
@@ -20,6 +21,9 @@ EOT
 
 apt-get dist-upgrade -qy
 
-if [[ -n "${DEPENDENCIES}" ]]; then
-  apt-get install -qy ${DEPENDENCIES}
+if [[ -n "$1" ]]; then
+  apt-get install -qy $1
 fi
+
+ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1
+mkdir -p /tmp/ffmpeg /deps /deps/usr/local/lib

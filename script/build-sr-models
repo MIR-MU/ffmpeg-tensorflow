@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+apt-get install -y python3 python3-pip git
+python3 -m pip install --upgrade pip
+pip3 install setuptools wheel
+pip3 install tensorflow==$1 numpy
+
+TEMPDIR=$(mktemp -d)
+trap 'rm -r $TEMPDIR' EXIT
+
+pushd $TEMPDIR
+git clone https://github.com/HighVoltageRocknRoll/sr
+pushd sr
+python3 generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn
+python3 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn
+python3 generate_header_and_model.py --model=vespcn --ckpt_path=checkpoints/vespcn
+python3 generate_header_and_model.py --model=vsrnet --ckpt_path=checkpoints/vsrnet
+mkdir /usr/local/share/ffmpeg-tensorflow-models/
+cp espcn.pb srcnn.pb vespcn.pb vsrnet.pb /usr/local/share/ffmpeg-tensorflow-models/
+popd
+rm -rf sr
+popd
