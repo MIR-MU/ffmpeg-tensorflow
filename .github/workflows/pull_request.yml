@@ -9,7 +9,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-18.04
-    needs: [preparation]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
