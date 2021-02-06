@@ -30,16 +30,16 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: environment
-      - name: Authenticate registry
-        uses: azure/docker-login@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Configure system
         run: script/github-configure
       - name: Build image
         run: script/github-build
       - name: Test image
         run: script/github-test
+      - name: Authenticate registry
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish image
         run: script/github-publish
