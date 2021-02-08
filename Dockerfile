@@ -32,12 +32,11 @@ LABEL authors="Vít Novotný <witiko@mail.muni.cz>,Mikuláš Bankovič <456421@m
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
-COPY script/ /usr/local/sbin/
 COPY --from=build /deps /
 COPY --from=build /usr/local/bin/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=build /usr/local/bin/ffprobe /usr/local/bin/ffprobe
 COPY --from=build /usr/local/share/ffmpeg-tensorflow-models/ /usr/local/share/ffmpeg-tensorflow-models/
 
-RUN set -e && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models && bootstrap && finalize
+RUN set -e && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
