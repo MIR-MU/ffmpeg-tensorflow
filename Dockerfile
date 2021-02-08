@@ -18,7 +18,7 @@ RUN set -e \
         && build-libtensorflow ${VERSION_LIBTENSORFLOW} \
         && build-ffmpeg ${VERSION_FFMPEG} \
         && build-sr-models ${VERSION_TENSORFLOW} \
-        && finalize ${DEPENDENCIES}
+        && finalize
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 
