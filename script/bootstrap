@@ -21,8 +21,9 @@ EOT
 
 apt-get dist-upgrade -qy
 
-if [[ -n "$1" ]]; then
-  apt-get install -qy $1
+if (( $# > 0 ))
+then
+  apt-get install -qy "$@"
 fi
 
 ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1
