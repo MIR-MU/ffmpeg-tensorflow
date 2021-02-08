@@ -20,6 +20,7 @@ else
   pushd tensorflow/tensorflow/tools/ci_build/linux/
   git checkout v$1
   if [[ -e /tmp/patch/libtensorflow-$1.diff ]]
+  then
     pushd ../../../..
     git apply /tmp/patch/libtensorflow-$1.diff
     popd
