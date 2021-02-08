@@ -9,8 +9,7 @@ ARG VERSION_TENSORFLOW=1.15.0
 ARG DEPENDENCIES="autoconf automake build-essential cmake curl git-core libass-dev libfdk-aac-dev libfreetype6-dev libgnutls28-dev libmp3lame-dev libnuma-dev libopus-dev libsdl2-dev libtool libunistring-dev libva-dev libvdpau-dev libvorbis-dev libvpx-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb1-dev libx264-dev libx265-dev nasm pkg-config texinfo yasm zlib1g-dev"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    TERM=xterm \
-    CLEANUP=""
+    TERM=xterm
 
 COPY script/ /usr/local/sbin/
 COPY patch/ /tmp/patch/
