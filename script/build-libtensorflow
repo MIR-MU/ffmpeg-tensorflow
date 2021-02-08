@@ -5,10 +5,13 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-curl -kLs https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-$1.tar.gz | tar -xzC /usr/local -f -
+URL="https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-$1.tar.gz"
+HTTP_CODE=$(curl -kLsI -o /dev/null -w "%{http_code}" "$URL")
 
-if [[ $? != 0 ]]
+if [[ $HTTP_CODE = 200 ]]
 then
+  curl -kLs "$URL" | tar -xzC /usr/local -f -
+else
   TEMPDIR=$(mktemp -d)
   trap 'rm -r $TEMPDIR' EXIT
 
