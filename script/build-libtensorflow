@@ -27,5 +27,6 @@ else
   fi
   ./libtensorflow_gpu.sh
   popd
+  tar -xzC /usr/local -f tensorflow/lib_package/libtensorflow-gpu*.tar.gz
   popd
 fi
