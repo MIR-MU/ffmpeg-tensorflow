@@ -5,27 +5,27 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-TEMPDIR=$(mktemp -d)
-trap 'rm -r $TEMPDIR' EXIT
+TEMPDIR="$(mktemp -d)"
+trap 'rm -r "$TEMPDIR"' EXIT
 
-curl -kLs https://ffmpeg.org/releases/ffmpeg-$1.tar.bz2 | tar --strip 1 -xjC $TEMPDIR -f -
-pushd $TEMPDIR
-./configure
- --pkg-config-flags='--static'
- --extra-libs='-lpthread -lm'
- --enable-gpl
- --enable-gnutls
- --enable-libass
- --enable-libfdk-aac
- --enable-libfreetype
- --enable-libmp3lame
- --enable-libopus
- --enable-libvorbis
- --enable-libvpx
- --enable-libx264
- --enable-libx265
- --enable-libtensorflow
+curl -kLs https://ffmpeg.org/releases/ffmpeg-"$1".tar.bz2 | tar --strip 1 -xjC "$TEMPDIR" -f -
+pushd "$TEMPDIR"
+./configure \
+ --pkg-config-flags='--static' \
+ --extra-libs='-lpthread -lm' \
+ --enable-gpl \
+ --enable-gnutls \
+ --enable-libass \
+ --enable-libfdk-aac \
+ --enable-libfreetype \
+ --enable-libmp3lame \
+ --enable-libopus \
+ --enable-libvorbis \
+ --enable-libvpx \
+ --enable-libx264 \
+ --enable-libx265 \
+ --enable-libtensorflow \
  --enable-nonfree
-make -j $(nproc)
+make -j "$(nproc)"
 make install
 popd
