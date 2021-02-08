@@ -8,7 +8,8 @@ set -o xtrace
 ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;'
 mv /usr/local/lib/libtensorflow* /deps/usr/local/lib
 
-if [[ -n "$1" ]]; then
+if [[ -n "$1" ]]
+then
   apt-get remove --purge -qy $1
 fi
 
