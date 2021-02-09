@@ -5,7 +5,7 @@ FROM nvidia/cuda:${VERSION_CUDA}-devel-ubuntu${VERSION_UBUNTU} as build
 
 ARG VERSION_FFMPEG=4.3.1
 ARG VERSION_LIBTENSORFLOW=1.15.0
-ARG DEPENDENCIES="autoconf automake build-essential cmake curl git-core libass-dev libfdk-aac-dev libfreetype6-dev libgnutls28-dev libmp3lame-dev libnuma-dev libopus-dev libsdl2-dev libtool libunistring-dev libva-dev libvdpau-dev libvorbis-dev libvpx-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb1-dev libx264-dev libx265-dev nasm pkg-config texinfo yasm zlib1g-dev python3 python3-pip git"
+ARG DEPENDENCIES="autoconf automake build-essential cmake curl git-core libass-dev libfdk-aac-dev libfreetype6-dev libgnutls28-dev libmp3lame-dev libnuma-dev libopus-dev libsdl2-dev libtool libunistring-dev libva-dev libvdpau-dev libvorbis-dev libvpx-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb1-dev libx264-dev libx265-dev nasm pkg-config texinfo yasm zlib1g-dev python3.6 python3 python3-pip git"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
