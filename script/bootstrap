@@ -32,4 +32,4 @@ then
 fi
 
 ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1
-mkdir -p /tmp/ffmpeg /deps /deps/usr/local/lib
+mkdir -p /deps /deps/usr/local/lib
