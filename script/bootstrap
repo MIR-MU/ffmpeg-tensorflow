@@ -18,17 +18,12 @@ path-exclude=/usr/share/man/*
 path-exclude=/usr/share/doc/*
 path-include=/usr/share/doc/*/copyright
 EOT
-
 apt-get dist-upgrade -qy
-apt-get install -qy autoconf automake build-essential cmake curl git-core libass-dev libfdk-aac-dev libfreetype6-dev libgnutls28-dev libmp3lame-dev libnuma-dev libopus-dev libsdl2-dev libtool libunistring-dev libva-dev libvdpau-dev libvorbis-dev libvpx-dev libxcb-shm0-dev libxcb-xfixes0-dev libxcb1-dev libx264-dev libx265-dev nasm pkg-config texinfo yasm zlib1g-dev
 
-# install nested docker, so that we can build libtensorflow if needed
-apt-get install -qy apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-apt-get -qy update
-apt-get install -qy docker-ce docker-ce-cli containerd.io
-systemctl start docker
+if (( $# > 0 ))
+then
+  apt-get install -qy "$@"
+fi
 
 ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1
 mkdir -p /tmp/ffmpeg /deps /deps/usr/local/lib

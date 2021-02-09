@@ -1,5 +1,5 @@
 #!/bin/bash
-#shellcheck disable=SC2016
+#shellcheck disable=SC2016,SC1090
 
 set -o errexit
 set -o pipefail
@@ -8,3 +8,19 @@ set -o xtrace
 
 ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;'
 mv /usr/local/lib/libtensorflow* /deps/usr/local/lib
+
+if (( $# > 0 ))
+then
+  apt-get remove --purge -qy "$@"
+fi
+
+apt-get -qy autoclean
+apt-get -qy clean
+apt-get -qy autoremove --purge
+
+rm -rf /tmp/* /var/tmp/* /var/log/* /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/* /usr/share/man/* /usr/share/locale/* /var/cache/apt/*
+rm -f /usr/local/lib/libcuda.so.1
+find /usr/share/doc -depth -type f ! -name "copyright" -delete
+find /usr/share/doc -empty -type d -delete
+
+. ~/.profile

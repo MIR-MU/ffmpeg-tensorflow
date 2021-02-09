@@ -6,27 +6,4 @@ set -o nounset
 set -o xtrace
 
 URL="https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-$1.tar.gz"
-HTTP_CODE=$(curl -kLsI -o /dev/null -w "%{http_code}" "$URL")
-
-if [[ $HTTP_CODE = 200 ]]
-then
-  curl -kLs "$URL" | tar -xzC /usr/local -f -
-else
-  TEMPDIR="$(mktemp -d)"
-  trap 'rm -r "$TEMPDIR"' EXIT
-
-  pushd "$TEMPDIR"
-  git clone https://github.com/tensorflow/tensorflow.git
-  pushd tensorflow/tensorflow/tools/ci_build/linux/
-  git checkout v"$1"
-  if [[ -e /tmp/patch/libtensorflow-"$1".diff ]]
-  then
-    pushd ../../../..
-    git apply /tmp/patch/libtensorflow-"$1".diff
-    popd
-  fi
-  ./libtensorflow_gpu.sh
-  popd
-  tar -xzC /usr/local -f tensorflow/lib_package/libtensorflow-gpu*.tar.gz
-  popd
-fi
+curl -kLs "$URL" | tar -xzC /usr/local -f -

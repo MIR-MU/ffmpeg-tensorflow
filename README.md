@@ -28,7 +28,7 @@ should match your NVIDIA driver, see [NVIDIA CUDA Toolkit Release Notes, Table
 2][nvidia-driver]:
 
 ``` sh
-docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_TENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.0-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
+docker build --compress --no-cache --force-rm --squash --build-arg VERSION_LIBTENSORFLOW=1.15.0 --build-arg VERSION_CUDA=10.0-cudnn7 --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 -t miratmu/ffmpeg-tensorflow ffmpeg-tensorflow/
 ```
 
 You should now see `miratmu/ffmpeg-tensorflow` among your Docker images:

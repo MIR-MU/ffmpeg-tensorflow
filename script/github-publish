@@ -5,5 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-docker push miratmu/ffmpeg-tensorflow:cuda9.0
-docker push miratmu/ffmpeg-tensorflow:cuda10.0
+for TAG in cuda9.0 cuda10.0
+do
+  docker push miratmu/ffmpeg-tensorflow:"$TAG"
+done
