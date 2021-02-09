@@ -1,5 +1,7 @@
 # FFMpeg with Libtensorflow
 
+[![Build and publish][github-build-and-publish-badge]][github-build-and-publish-actions]
+
 Since [Google Summer of Code 2018][summer-of-code], FFMpeg supports [the `sr`
 filter][sr] for applying super-resolution methods based on convolutional neural
 networks. However, compiling FFMpeg with proper libraries and preparing models
@@ -71,11 +73,13 @@ described in the `HighVoltageRocknRoll/sr` GitHub repository.
 
  [comparison]: comparison.jpg
  [div2k]: https://data.vision.ee.ethz.ch/cvl/DIV2K/
- [docker]: https://docs.docker.com/engine/install/
  [docker-build-arg]: https://docs.docker.com/engine/reference/builder/#arg
+ [docker]: https://docs.docker.com/engine/install/
  [docker-hub]: https://hub.docker.com/r/miratmu/ffmpeg-tensorflow
- [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
  [ffmpeg-latest]: https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+ [flower]: https://media.xiph.org/video/derf/y4m/flower_cif.y4m
+ [github-build-and-publish-actions]: https://github.com/MIR-MU/ffmpeg-tensorflow/actions?query=workflow%3ABuild%20and%20publish
+ [github-build-and-publish-badge]: https://github.com/MIR-MU/ffmpeg-tensorflow/workflows/Build%20and%20publish/badge.svg
  [HighVoltageRocknRoll/sr]: https://github.com/HighVoltageRocknRoll/sr
  [issues]: https://github.com/MIR-MU/ffmpeg-tensorflow/issues?q=is%3Aissue
  [miniconda]: https://docs.conda.io/en/latest/miniconda.html
@@ -84,6 +88,6 @@ described in the `HighVoltageRocknRoll/sr` GitHub repository.
  [nvidia-cuda]: https://hub.docker.com/r/nvidia/cuda/
  [nvidia-docker]: https://github.com/NVIDIA/nvidia-docker
  [nvidia-driver]: https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html#cuda-major-component-versions
- [summer-of-code]: https://summerofcode.withgoogle.com/archive/2018/projects/5661133578960896/
  [sr]: https://ffmpeg.org/ffmpeg-filters.html#sr-1
+ [summer-of-code]: https://summerofcode.withgoogle.com/archive/2018/projects/5661133578960896/
  [tensorflow-compatibility]: https://www.tensorflow.org/install/source#gpu
