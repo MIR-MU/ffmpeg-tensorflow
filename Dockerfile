@@ -11,7 +11,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
 COPY script/ /usr/local/sbin/
-COPY patch/ /tmp/patch/
  
 RUN set -o errexit \
  && set -o xtrace \
