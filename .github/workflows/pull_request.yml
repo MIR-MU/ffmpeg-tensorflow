@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Configure system
         run: script/github-configure
-      - name: Build image
+      - name: Build images
         run: script/github-build
-      - name: Test image
+      - name: Test images
         run: script/github-test
