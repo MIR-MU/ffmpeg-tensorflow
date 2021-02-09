@@ -23,4 +23,6 @@ rm -f /usr/local/lib/libcuda.so.1
 find /usr/share/doc -depth -type f ! -name "copyright" -delete
 find /usr/share/doc -empty -type d -delete
 
+set +o nounset
+
 . ~/.profile
