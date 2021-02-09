@@ -16,8 +16,8 @@ jobs:
       - name: Run ShellCheck
         uses: ludeeus/action-shellcheck@master
   build:
-    name: Build
-    runs-on: ubuntu-18.04
+    name: Build and publish
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
