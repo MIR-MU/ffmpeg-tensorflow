@@ -5,5 +5,4 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
-URL="https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-$1.tar.gz"
-curl -kLs "$URL" | tar -xzC /usr/local -f -
+curl -kLs https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-"$1".tar.gz | tar -xzC /usr/local -f -

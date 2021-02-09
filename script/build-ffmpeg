@@ -1,4 +1,5 @@
 #!/bin/bash
+#shellcheck disable=SC2016
 
 set -o errexit
 set -o pipefail
@@ -29,3 +30,8 @@ pushd "$TEMPDIR"
 make -j "$(nproc)"
 make install
 popd
+
+# Persist dependencies
+mkdir -p /deps/usr/local/lib
+mv /usr/local/lib/libtensorflow* /deps/usr/local/lib
+ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;'

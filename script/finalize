@@ -1,13 +1,10 @@
 #!/bin/bash
-#shellcheck disable=SC2016,SC1090
+#shellcheck disable=SC1090
 
 set -o errexit
 set -o pipefail
 set -o nounset
 set -o xtrace
-
-ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;'
-mv /usr/local/lib/libtensorflow* /deps/usr/local/lib
 
 if (( $# > 0 ))
 then
