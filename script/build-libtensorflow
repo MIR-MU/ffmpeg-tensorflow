@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
-
-curl -kLs https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-"$1".tar.gz | tar -xzC /usr/local -f -

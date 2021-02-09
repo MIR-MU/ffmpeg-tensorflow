@@ -18,17 +18,3 @@ path-exclude=/usr/share/man/*
 path-exclude=/usr/share/doc/*
 path-include=/usr/share/doc/*/copyright
 EOT
-
-apt-get dist-upgrade -qy
-
-# Add PPA with Python 3.6 for Ubuntu 16.04
-apt-get install -qy software-properties-common
-add-apt-repository ppa:deadsnakes/ppa
-apt-get -qy update
-
-if (( $# > 0 ))
-then
-  apt-get install -qy "$@"
-fi
-
-ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+if [[ "$*" == *' python3.6 '* ]]
+then
+  apt-get -qy install software-properties-common
+  add-apt-repository ppa:deadsnakes/ppa
+  apt-get -qy update
+fi
+
+if (( $# > 0 ))
+then
+  apt-get -qy install "$@"
+fi

@@ -17,6 +17,7 @@ ARG DEPENDENCIES="\
   libfdk-aac-dev \
   libfreetype6-dev \
   libgnutls28-dev \
+  libgomp1 \
   libmp3lame-dev \
   libnuma-dev \
   libopus-dev \
@@ -49,11 +50,12 @@ COPY script/ /usr/local/sbin/
  
 RUN set -o errexit \
  && set -o xtrace \
- && bootstrap ${DEPENDENCIES} \
- && build-libtensorflow ${VERSION_LIBTENSORFLOW} \
- && build-ffmpeg ${VERSION_FFMPEG} \
- && build-sr-models ${VERSION_LIBTENSORFLOW} \
- && finalize ${DEPENDENCIES}
+ && bootstrap-prepare \
+ && bootstrap-upgrade \
+ && bootstrap-install ${DEPENDENCIES} \
+ && build ${VERSION_LIBTENSORFLOW} ${VERSION_FFMPEG} \
+ && produce-sr-models ${VERSION_LIBTENSORFLOW} \
+ && cleanup ${DEPENDENCIES}
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
 
@@ -63,6 +65,10 @@ FROM nvidia/cuda:${VERSION_CUDA}-runtime-ubuntu${VERSION_UBUNTU}
 LABEL authors="Vít Novotný <witiko@mail.muni.cz>,Mikuláš Bankovič <456421@mail.muni.cz>,Dirk Lüth <dirk.lueth@gmail.com>" \
       org.label-schema.docker.dockerfile="/Dockerfile" \
       org.label-schema.name="jetson.ffmpeg"
+
+ARG DEPENDENCIES="\
+  libgomp1 \
+"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
@@ -76,8 +82,9 @@ COPY --from=build /usr/local/share/ffmpeg-tensorflow-models/ /usr/local/share/ff
 
 RUN set -o errexit \
  && set -o xtrace \
+ && bootstrap-prepare \
+ && bootstrap-install ${DEPENDENCIES} \
  && ln -s /usr/local/share/ffmpeg-tensorflow-models/ /models \
- && bootstrap ${DEPENDENCIES} \
- && finalize ${DEPENDENCIES}
+ && cleanup
 
 ENTRYPOINT ["/usr/local/bin/ffmpeg"]
