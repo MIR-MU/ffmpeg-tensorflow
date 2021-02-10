@@ -1,14 +1,12 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
+. script/github-common
 
-docker build --build-arg VERSION_UBUNTU=16.04 --build-arg VERSION_FFMPEG=4.3.1 --build-arg VERSION_CUDA=9.0-cudnn7  --build-arg VERSION_LIBTENSORFLOW=1.12.0 --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow:4.3.1-cuda9.0  .
-docker build --build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=4.3.1 --build-arg VERSION_CUDA=10.0-cudnn7 --build-arg VERSION_LIBTENSORFLOW=1.15.0 --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow:4.3.1-cuda10.0 .
+# Build image
+docker_build -t "$IMAGE_TAG" .
 
-docker tag miratmu/ffmpeg-tensorflow:4.3.1-cuda9.0   miratmu/ffmpeg-tensorflow:latest-cuda9.0
-docker tag miratmu/ffmpeg-tensorflow:4.3.1-cuda10.0  miratmu/ffmpeg-tensorflow:latest-cuda10.0
-
-docker tag miratmu/ffmpeg-tensorflow:latest-cuda10.0 miratmu/ffmpeg-tensorflow:latest
+# Add alias tags
+for ALIAS_TAG in "${ALIAS_TAGS[@]}"
+do
+  docker tag "$IMAGE_TAG" "$ALIAS_TAG"
+done

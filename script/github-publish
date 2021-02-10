@@ -1,16 +1,9 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
+. script/github-common
 
-for FFMPEG_VERSION in 4.3.1 latest
+# Publish image
+for IMAGE_OR_ALIAS_TAG in "$IMAGE_TAG" "${ALIAS_TAGS[@]}"
 do
-  for CUDA_VERSION in cuda9.0 cuda10.0
-  do
-    docker push miratmu/ffmpeg-tensorflow:"$FFMPEG_VERSION"-"$CUDA_VERSION"
-  done
+  docker push "$IMAGE_OR_ALIAS_TAG"
 done
-
-docker push miratmu/ffmpeg-tensorflow:latest

@@ -1,24 +1,12 @@
 #!/bin/bash
+#shellcheck disable=SC2002
 
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
+. script/github-common
 
-# update packages & install requirements
+# Update packages & install requirements
 sudo apt-get -qy update
 sudo apt-get -qy install moreutils
 
-# enable Dockers experimental features
-DOCKER_CONFIG=""
-if [ -z "${DOCKER_CONFIG}" ]
-then
-  DOCKER_CONFIG="${TEMPORARY_DIRECTORY}/docker.$(date +%s)"
-  export DOCKER_CONFIG
-  mkdir -p "${DOCKER_CONFIG}"
-  touch "${DOCKER_CONFIG}"/config.json
-fi
-
-sudo sh -c "jq -s 'add' ${DOCKER_CONFIG}/config.json ./.docker/config.json | sponge ${DOCKER_CONFIG}/config.json"
-sudo sh -c "jq . ./.docker/daemon.json | sponge /etc/docker/daemon.json"
+# Enable Docker's experimental features
+cat .docker/daemon.json | sudo tee /etc/docker/daemon.json
 sudo service docker restart

@@ -1,6 +1,7 @@
-name: Pull request
+name: Build and publish
 on:
-  pull_request:
+  push:
+    branches: [ master ]
   workflow_dispatch:
 env:
   DEBIAN_FRONTEND: noninteractive
@@ -17,7 +18,7 @@ jobs:
         env:
           SHELLCHECK_OPTS: -x
   latest-cuda9_0:
-    name: Build, CUDA 9.0
+    name: Build and publish, CUDA 9.0
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -26,8 +27,15 @@ jobs:
         run: script/github-configure latest-cuda9.0
       - name: Build image
         run: script/github-build latest-cuda9.0
+      - name: Authenticate registry
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Publish image
+        run: script/github-publish latest-cuda9.0
   latest-cuda10_0:
-    name: Build, CUDA 10.0
+    name: Build and publish, CUDA 10.0
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,3 +46,10 @@ jobs:
         run: script/github-build latest-cuda10.0
       - name: Test image
         run: script/github-test latest-cuda10.0
+      - name: Authenticate registry
+        uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Publish image
+        run: script/github-publish latest-cuda10.0
