@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o pipefail
+set -o nounset
 set -o xtrace
 
 apt-get -qy update
@@ -17,9 +18,3 @@ path-exclude=/usr/share/man/*
 path-exclude=/usr/share/doc/*
 path-include=/usr/share/doc/*/copyright
 EOT
-
-apt-get dist-upgrade -qy
-
-if [[ -n "${DEPENDENCIES}" ]]; then
-  apt-get install -qy ${DEPENDENCIES}
-fi

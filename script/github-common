@@ -1,0 +1,53 @@
+#!/bin/bash
+#shellcheck disable=SC2034
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+if (( $# < 1 ))
+then
+    printf 'Usage: %s IMAGE_TAG\n' "$0"
+    exit 1
+fi
+
+# Define useful variables
+BUILD_PARAMETERS=()
+read -r -a BUILD_PARAMETERS < tags/"$1"
+
+IMAGE_TAG="$(readlink -f tags/"$1")"
+IMAGE_TAG=miratmu/ffmpeg-tensorflow:"${IMAGE_TAG##*/}"
+
+ALIAS_TAGS=()
+for ALIAS_TAG in tags/*
+do
+  ALIAS_TAG=miratmu/ffmpeg-tensorflow:"${ALIAS_TAG##*/}"
+  if [[ "$ALIAS_TAG" = "$IMAGE_TAG" ]]
+  then
+    continue
+  fi
+  ALIAS_IMAGE_TAG="$(readlink -f tags/"${ALIAS_TAG##*:}")"
+  ALIAS_IMAGE_TAG=miratmu/ffmpeg-tensorflow:"${ALIAS_IMAGE_TAG##*/}"
+  if [[ "$ALIAS_IMAGE_TAG" = "$IMAGE_TAG" ]]
+  then
+    ALIAS_TAGS+=("$ALIAS_TAG")
+  fi
+done
+
+# Define command aliases
+docker_build() {
+  docker build "${BUILD_PARAMETERS[@]}" --compress --no-cache --force-rm --squash "$@"
+}
+
+docker_run() {
+  docker run --rm -u "$(id -u)":"$(id -g)" -v "$PWD":/data -w /data --entrypoint "$1" "$IMAGE_TAG" "${@:2}"
+}
+
+ffmpeg() {
+  docker_run /usr/local/bin/ffmpeg "$@"
+}
+
+ffprobe() {
+  docker_run /usr/local/bin/ffprobe "$@"
+}

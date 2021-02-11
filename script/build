@@ -1,0 +1,44 @@
+#!/bin/bash
+#shellcheck disable=SC2016
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+# Expose cuda to linker
+ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/lib/libcuda.so.1
+
+# Install libtensorflow
+curl -fsSL https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-gpu-linux-x86_64-"$1".tar.gz | tar -xzC /usr/local -f -
+
+# Install ffmpeg
+TEMPDIR="$(mktemp -d)"
+trap 'rm -r "$TEMPDIR"' EXIT
+
+curl -fsSL https://ffmpeg.org/releases/ffmpeg-"$2".tar.bz2 | tar --strip 1 -xjC "$TEMPDIR" -f -
+pushd "$TEMPDIR"
+./configure \
+ --pkg-config-flags='--static' \
+ --extra-libs='-lpthread -lm' \
+ --enable-gpl \
+ --enable-gnutls \
+ --enable-libass \
+ --enable-libfdk-aac \
+ --enable-libfreetype \
+ --enable-libmp3lame \
+ --enable-libopus \
+ --enable-libvorbis \
+ --enable-libvpx \
+ --enable-libx264 \
+ --enable-libx265 \
+ --enable-libtensorflow \
+ --enable-nonfree
+make -j "$(nproc)"
+make install
+popd
+
+# Persist dependencies
+mkdir -p /deps/usr/local/lib
+mv /usr/local/lib/libtensorflow* /deps/usr/local/lib
+ldd /usr/local/bin/ffmpeg | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'mkdir -p $(dirname /deps%); cp % /deps%;'

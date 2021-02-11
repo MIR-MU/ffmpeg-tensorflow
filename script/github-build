@@ -1,10 +1,12 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
+. script/github-common
 
-source ./environment/vars
+# Build image
+docker_build -t "$IMAGE_TAG" .
 
-docker build --compress --no-cache --force-rm --squash -t miratmu/ffmpeg-tensorflow:${DOCKER_TAG} .
+# Add alias tags
+for ALIAS_TAG in "${ALIAS_TAGS[@]}"
+do
+  docker tag "$IMAGE_TAG" "$ALIAS_TAG"
+done

@@ -1,12 +1,9 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-set -o nounset
-set -o xtrace
+. script/github-common
 
-source ./environment/vars
-
-docker tag miratmu/ffmpeg-tensorflow:${DOCKER_TAG} miratmu/ffmpeg-tensorflow:latest
-docker push miratmu/ffmpeg-tensorflow:${DOCKER_TAG}
-docker push miratmu/ffmpeg-tensorflow:latest
+# Publish image
+for IMAGE_OR_ALIAS_TAG in "$IMAGE_TAG" "${ALIAS_TAGS[@]}"
+do
+  docker push "$IMAGE_OR_ALIAS_TAG"
+done

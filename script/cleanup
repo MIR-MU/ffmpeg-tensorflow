@@ -1,0 +1,29 @@
+#!/bin/bash
+#shellcheck disable=SC1090
+
+set -o errexit
+set -o pipefail
+set -o nounset
+set -o xtrace
+
+if (( $# > 0 ))
+then
+  apt-get -qy remove --purge "$@"
+fi
+
+if [[ "$*" == *' python3.6 '* ]]
+then
+  apt-get -qy remove --purge software-properties-common
+fi
+
+apt-get -qy autoclean
+apt-get -qy clean
+apt-get -qy autoremove --purge
+
+rm -rf /tmp/* /var/tmp/* /var/log/* /var/lib/apt/lists/* /var/lib/{apt,dpkg,cache,log}/* /usr/share/man/* /usr/share/locale/* /var/cache/apt/*
+find /usr/share/doc -depth -type f ! -name "copyright" -delete
+find /usr/share/doc -empty -type d -delete
+
+set +o nounset
+
+. ~/.profile
