@@ -3,10 +3,6 @@
 
 . script/github-common
 
-# Update packages & install requirements
-sudo apt-get -qy update
-sudo apt-get -qy install moreutils
-
 # Enable Docker's experimental features
 cat .docker/daemon.json | sudo tee /etc/docker/daemon.json
 sudo service docker restart
