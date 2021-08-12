@@ -13,7 +13,7 @@ TEMPDIR="$(mktemp -d)"
 trap 'rm -r "$TEMPDIR"' EXIT
 
 pushd "$TEMPDIR"
-git clone https://github.com/HighVoltageRocknRoll/sr
+git clone https://github.com/MIR-MU/sr
 pushd sr
 python3.6 generate_header_and_model.py --model=espcn  --ckpt_path=checkpoints/espcn
 python3.6 generate_header_and_model.py --model=srcnn  --ckpt_path=checkpoints/srcnn
