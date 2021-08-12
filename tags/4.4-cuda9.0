@@ -1,0 +1,1 @@
+--build-arg VERSION_UBUNTU=16.04 --build-arg VERSION_FFMPEG=4.4 --build-arg VERSION_CUDA=9.0-cudnn7  --build-arg VERSION_LIBTENSORFLOW=1.12.0
