@@ -16,39 +16,24 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         env:
           SHELLCHECK_OPTS: -x
-  latest-cuda9_0:
-    name: Build and publish, CUDA 9.0
+  latest:
+    name: Build and publish
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ffmpeg_version: [latest]
+        cuda_version: ['9.0', '10.0']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Configure system
-        run: script/github-configure latest-cuda9.0
+        run: script/github-configure ${{ matrix.ffmpeg_version }}-cuda${{ matrix.cuda_version }}
       - name: Build image
-        run: script/github-build latest-cuda9.0
+        run: script/github-build ${{ matrix.ffmpeg_version }}-cuda${{ matrix.cuda_version }}
       - name: Authenticate registry
         uses: azure/docker-login@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Publish image
-        run: script/github-publish latest-cuda9.0
-  latest-cuda10_0:
-    name: Build and publish, CUDA 10.0
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Configure system
-        run: script/github-configure latest-cuda10.0
-      - name: Build image
-        run: script/github-build latest-cuda10.0
-      - name: Test image
-        run: script/github-test latest-cuda10.0
-      - name: Authenticate registry
-        uses: azure/docker-login@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Publish image
-        run: script/github-publish latest-cuda10.0
+        run: script/github-publish ${{ matrix.ffmpeg_version }}-cuda${{ matrix.cuda_version }}
