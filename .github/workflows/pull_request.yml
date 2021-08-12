@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         ffmpeg_version: [latest]
-        cuda_version: ['9.0', '10.0']
+        cuda_version: ['9.0', '10.0', '11.0']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
