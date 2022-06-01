@@ -38,6 +38,7 @@ ARG DEPENDENCIES="\
   python3 \
   python3-pip \
   python3.6 \
+  python3.6-distutils \
   texinfo \
   yasm \
   zlib1g-dev \
@@ -47,7 +48,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
 COPY script/ /usr/local/sbin/
- 
+
 RUN set -o errexit \
  && set -o xtrace \
  && bootstrap-prepare \
