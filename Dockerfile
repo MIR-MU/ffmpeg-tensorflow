@@ -36,6 +36,7 @@ ARG DEPENDENCIES="\
   nasm \
   pkg-config \
   python3 \
+  python3-distutils \
   python3-pip \
   python3.6 \
   texinfo \
@@ -47,7 +48,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
 COPY script/ /usr/local/sbin/
- 
+
 RUN set -o errexit \
  && set -o xtrace \
  && bootstrap-prepare \
