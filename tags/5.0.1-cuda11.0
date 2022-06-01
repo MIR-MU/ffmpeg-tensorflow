@@ -1,0 +1,1 @@
+--build-arg VERSION_UBUNTU=20.04 --build-arg VERSION_FFMPEG=5.0.1 --build-arg VERSION_CUDA=11.0.3-cudnn8 --build-arg VERSION_LIBTENSORFLOW=2.4.0

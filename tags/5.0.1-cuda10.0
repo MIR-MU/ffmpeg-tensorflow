@@ -1,0 +1,1 @@
+--build-arg VERSION_UBUNTU=18.04 --build-arg VERSION_FFMPEG=5.0.1 --build-arg VERSION_CUDA=10.0-cudnn7 --build-arg VERSION_LIBTENSORFLOW=1.15.0
